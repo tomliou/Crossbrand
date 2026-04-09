@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FastPass 跨品牌經銷商首頁</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+            },
+            surface: {
+              50: '#F8FAFC',
+              100: '#F1F5F9',
+              200: '#E2E8F0',
+              300: '#CBD5E1',
+              400: '#94A3B8',
+              500: '#64748B',
+              600: '#475569',
+              700: '#334155',
+              800: '#1E293B',
+              900: '#0F172A',
+            },
+            accent: {
+              orange: '#F97316',
+              green: '#22C55E',
+              red: '#EF4444',
+              yellow: '#EAB308',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .banner-track { display: flex; transition: transform 0.5s ease; }
+    .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; }
+    .banner-dot.active { background: #fff; width: 24px; border-radius: 4px; }
+    .brand-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+    .brand-scroll::-webkit-scrollbar { display: none; }
+    .product-scroll { scrollbar-width: none; -ms-overflow-style: none; scroll-snap-type: x mandatory; }
+    .product-scroll::-webkit-scrollbar { display: none; }
+    .product-scroll > * { scroll-snap-align: start; }
+    .coupon-card {
+      background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+      border: 1px solid #FDBA74;
+      position: relative; overflow: hidden;
+    }
+    .coupon-card::before, .coupon-card::after {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      background: #F8FAFC; border-radius: 50%; top: 50%; transform: translateY(-50%);
+    }
+    .coupon-card::before { left: -8px; }
+    .coupon-card::after { right: -8px; }
+    .top-badge {
+      position: absolute; top: 8px; left: 8px; width: 32px; height: 32px;
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; color: #fff; z-index: 2;
+    }
+    .top-1 { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    .top-2 { background: linear-gradient(135deg, #94A3B8, #64748B); }
+    .top-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); }
+    .top-other { background: #475569; }
+    .brand-tab { transition: all 0.2s; }
+    .brand-tab.active { color: #4F46E5; border-color: #4F46E5; font-weight: 600; }
+    .new-tag {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+      color: #fff; font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 4px;
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+    }
+    .card-hover { transition: box-shadow 0.2s, transform 0.2s; }
+    .card-hover:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .banner-slide { position: relative; }
+    .banner-slide img { width: 100%; height: 100%; object-fit: cover; }
+    .banner-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    }
+    .product-img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-logo-img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .animate-slide-in { animation: slideIn 0.3s ease; }
+  </style>
+</head>
+<body class="bg-surface-50 font-sans text-surface-800 antialiased">
+
+  <!-- HEADER -->
+  <header class="bg-white border-b border-surface-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">FP</span>
+          </div>
+          <span class="font-bold text-lg text-surface-900">FastPass</span>
+        </div>
+        <div class="hidden md:flex flex-1 max-w-xl mx-8">
+          <div class="relative w-full">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" placeholder="搜尋商品名稱、品牌..." class="w-full pl-10 pr-4 py-2.5 bg-surface-100 border border-surface-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="relative p-2 text-surface-500 hover:text-surface-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-accent-red rounded-full"></span>
+          </button>
+          <button class="relative p-2 text-surface-500 hover:text-surface-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+            <span class="absolute -top-0.5 -right-0.5 bg-accent-red text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">3</span>
+          </button>
+          <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center">
+            <span class="text-brand-700 font-semibold text-sm">王</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto">
+
+    <!-- ===== BANNER CAROUSEL ===== -->
+    <section class="relative overflow-hidden" aria-label="主視覺輪播">
+      <div class="banner-track" id="bannerTrack">
+        <div class="w-full flex-shrink-0 banner-slide">
+          <div class="aspect-[21/8] relative">
+            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1400&h=530&fit=crop&q=80" alt="寵物食品春季促銷">
+            <div class="banner-overlay"></div>
+            <div class="absolute inset-0 flex items-center px-8 sm:px-16">
+              <div class="max-w-2xl">
+                <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full mb-4">限時活動</span>
+                <h2 class="text-2xl sm:text-4xl font-bold text-white mb-3 leading-tight">2026 春季新品上市<br>全品牌首購 85 折</h2>
+                <p class="text-white/80 text-sm sm:text-base mb-6">精選 ACANA、Orijen、Champion 等品牌新品，限時優惠進貨中</p>
+                <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-brand-700 font-semibold rounded-lg hover:bg-surface-50 transition text-sm">
+                  立即選購 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex-shrink-0 banner-slide">
+          <div class="aspect-[21/8] relative">
+            <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=1400&h=530&fit=crop&q=80" alt="Orijen 新配方">
+            <div class="banner-overlay"></div>
+            <div class="absolute inset-0 flex items-center px-8 sm:px-16">
+              <div class="max-w-2xl">
+                <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full mb-4">品牌活動</span>
+                <h2 class="text-2xl sm:text-4xl font-bold text-white mb-3 leading-tight">Orijen 新配方<br>高蛋白無穀系列全面到貨</h2>
+                <p class="text-white/80 text-sm sm:text-base mb-6">源自加拿大的頂級寵物食品，滿額再享免運優惠</p>
+                <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-700 font-semibold rounded-lg hover:bg-surface-50 transition text-sm">
+                  查看詳情 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex-shrink-0 banner-slide">
+          <div class="aspect-[21/8] relative">
+            <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1400&h=530&fit=crop&q=80" alt="Q2 季度補貨優惠">
+            <div class="banner-overlay"></div>
+            <div class="absolute inset-0 flex items-center px-8 sm:px-16">
+              <div class="max-w-2xl">
+                <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full mb-4">經銷商專屬</span>
+                <h2 class="text-2xl sm:text-4xl font-bold text-white mb-3 leading-tight">Q2 季度補貨優惠<br>滿 $50,000 現折 $3,000</h2>
+                <p class="text-white/80 text-sm sm:text-base mb-6">跨品牌合併計算，把握年度最大補貨時機</p>
+                <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-amber-700 font-semibold rounded-lg hover:bg-surface-50 transition text-sm">
+                  了解規則 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <button class="banner-dot active" onclick="goToBanner(0)"></button>
+        <button class="banner-dot" onclick="goToBanner(1)"></button>
+        <button class="banner-dot" onclick="goToBanner(2)"></button>
+      </div>
+      <button onclick="prevBanner()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 hover:bg-black/40 rounded-full flex items-center justify-center text-white transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <button onclick="nextBanner()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 hover:bg-black/40 rounded-full flex items-center justify-center text-white transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </section>
+
+    <!-- ===== BRAND ENTRY ===== -->
+    <section class="px-4 sm:px-6 py-8" aria-label="品牌入口">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-surface-900">品牌館</h2>
+        <a href="#" class="text-sm text-brand-600 hover:text-brand-700 font-medium">查看全部 →</a>
+      </div>
+      <div class="brand-scroll flex gap-4 overflow-x-auto pb-2">
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=200&h=200&fit=crop&q=80" alt="ACANA" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">ACANA</span>
+        </a>
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=200&h=200&fit=crop&q=80" alt="Orijen" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">Orijen</span>
+        </a>
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?w=200&h=200&fit=crop&q=80" alt="Champion" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">Champion</span>
+        </a>
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=200&h=200&fit=crop&q=80" alt="Royal Canin" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">Royal Canin</span>
+        </a>
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=200&h=200&fit=crop&q=80" alt="Hill's" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">Hill's</span>
+        </a>
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=200&h=200&fit=crop&q=80" alt="Natural Balance" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">Natural Balance</span>
+        </a>
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=200&h=200&fit=crop&q=80" alt="Wellness" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">Wellness</span>
+        </a>
+        <a href="#" class="flex-shrink-0 w-[120px] flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-surface-200 card-hover">
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+            <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=200&fit=crop&q=80" alt="Ziwi Peak" class="brand-logo-img rounded-xl">
+          </div>
+          <span class="text-sm font-medium text-surface-700">Ziwi Peak</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== PROMOTION ENTRY ===== -->
+    <section class="px-4 sm:px-6 py-8 bg-white" aria-label="優惠活動">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-surface-900">優惠活動</h2>
+        <a href="#" class="text-sm text-brand-600 hover:text-brand-700 font-medium">查看全部 →</a>
+      </div>
+      <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+        <button class="brand-tab active px-4 py-2 text-sm rounded-full border border-surface-200 whitespace-nowrap" onclick="switchPromoTab(this, 'promo-acana')">ACANA</button>
+        <button class="brand-tab px-4 py-2 text-sm rounded-full border border-surface-200 text-surface-500 whitespace-nowrap" onclick="switchPromoTab(this, 'promo-orijen')">Orijen</button>
+        <button class="brand-tab px-4 py-2 text-sm rounded-full border border-surface-200 text-surface-500 whitespace-nowrap" onclick="switchPromoTab(this, 'promo-champion')">Champion</button>
+      </div>
+
+      <!-- ACANA Promo -->
+      <div id="promo-acana" class="promo-panel">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div class="coupon-card rounded-xl p-4">
+            <div class="flex items-baseline gap-1 mb-1"><span class="text-2xl font-bold text-orange-600">$500</span><span class="text-xs text-orange-500">折扣</span></div>
+            <p class="text-xs text-surface-600 mb-2">訂單滿 $10,000 可用</p>
+            <div class="flex items-center justify-between"><span class="text-[10px] text-surface-400">有效期至 2026/06/30</span><button class="text-[11px] font-semibold text-orange-600 hover:text-orange-700">領取</button></div>
+          </div>
+          <div class="coupon-card rounded-xl p-4">
+            <div class="flex items-baseline gap-1 mb-1"><span class="text-2xl font-bold text-orange-600">9折</span><span class="text-xs text-orange-500">優惠</span></div>
+            <p class="text-xs text-surface-600 mb-2">指定無穀系列商品</p>
+            <div class="flex items-center justify-between"><span class="text-[10px] text-surface-400">有效期至 2026/05/31</span><button class="text-[11px] font-semibold text-orange-600 hover:text-orange-700">領取</button></div>
+          </div>
+          <div class="coupon-card rounded-xl p-4">
+            <div class="flex items-baseline gap-1 mb-1"><span class="text-2xl font-bold text-orange-600">免運</span><span class="text-xs text-orange-500">優惠</span></div>
+            <p class="text-xs text-surface-600 mb-2">訂單滿 $5,000 即享</p>
+            <div class="flex items-center justify-between"><span class="text-[10px] text-surface-400">有效期至 2026/04/30</span><button class="text-[11px] font-semibold text-orange-600 hover:text-orange-700">領取</button></div>
+          </div>
+        </div>
+        <h3 class="text-sm font-semibold text-surface-600 mb-3">優惠適用商品</h3>
+        <div class="product-scroll flex gap-4 overflow-x-auto pb-2">
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover">
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop&q=80" alt="ACANA 無穀犬糧" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 無穀犬糧 - 放牧羊肉 11.4kg</p><p class="text-base font-bold text-brand-600">$2,480</p></div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover">
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=400&h=400&fit=crop&q=80" alt="ACANA 單一蛋白犬糧" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 單一蛋白犬糧 - 鴨肉 6kg</p><p class="text-base font-bold text-brand-600">$1,680</p></div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover">
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=400&h=400&fit=crop&q=80" alt="ACANA 室內貓無穀配方" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 室內貓無穀配方 4.5kg</p><p class="text-base font-bold text-brand-600">$1,380</p></div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover">
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop&q=80" alt="ACANA 海洋盛宴犬糧" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 海洋盛宴犬糧 11.4kg</p><p class="text-base font-bold text-brand-600">$2,680</p></div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover">
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1583337130417-13571d0e4c42?w=400&h=400&fit=crop&q=80" alt="ACANA 高齡犬配方" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 高齡犬配方 6kg</p><p class="text-base font-bold text-brand-600">$1,580</p></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Orijen Promo -->
+      <div id="promo-orijen" class="promo-panel hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div class="coupon-card rounded-xl p-4">
+            <div class="flex items-baseline gap-1 mb-1"><span class="text-2xl font-bold text-orange-600">$800</span><span class="text-xs text-orange-500">折扣</span></div>
+            <p class="text-xs text-surface-600 mb-2">Orijen 全系列滿 $15,000</p>
+            <div class="flex items-center justify-between"><span class="text-[10px] text-surface-400">有效期至 2026/06/30</span><button class="text-[11px] font-semibold text-orange-600 hover:text-orange-700">領取</button></div>
+          </div>
+          <div class="coupon-card rounded-xl p-4">
+            <div class="flex items-baseline gap-1 mb-1"><span class="text-2xl font-bold text-orange-600">85折</span><span class="text-xs text-orange-500">優惠</span></div>
+            <p class="text-xs text-surface-600 mb-2">新品首購限定</p>
+            <div class="flex items-center justify-between"><span class="text-[10px] text-surface-400">有效期至 2026/05/15</span><button class="text-[11px] font-semibold text-orange-600 hover:text-orange-700">領取</button></div>
+          </div>
+        </div>
+        <h3 class="text-sm font-semibold text-surface-600 mb-3">優惠適用商品</h3>
+        <div class="product-scroll flex gap-4 overflow-x-auto pb-2">
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover">
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop&q=80" alt="Orijen 六種鮮魚犬糧" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">Orijen 六種鮮魚犬糧 11.4kg</p><p class="text-base font-bold text-brand-600">$3,280</p></div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover">
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=400&fit=crop&q=80" alt="Orijen 原始獵食配方" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">Orijen 原始獵食配方 6kg</p><p class="text-base font-bold text-brand-600">$2,180</p></div>
+          </a>
+        </div>
+      </div>
+
+      <div id="promo-champion" class="promo-panel hidden">
+        <div class="text-center py-12 text-surface-400 text-sm">此品牌目前無優惠活動</div>
+      </div>
+    </section>
+
+    <!-- ===== NEW ARRIVALS ===== -->
+    <section class="px-4 sm:px-6 py-8" aria-label="新品上市">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-surface-900">新品上市</h2>
+        <a href="#" class="text-sm text-brand-600 hover:text-brand-700 font-medium">查看全部 →</a>
+      </div>
+      <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+        <button class="brand-tab active px-4 py-2 text-sm rounded-full border border-surface-200 whitespace-nowrap" onclick="switchNewTab(this, 'new-acana')">ACANA</button>
+        <button class="brand-tab px-4 py-2 text-sm rounded-full border border-surface-200 text-surface-500 whitespace-nowrap" onclick="switchNewTab(this, 'new-orijen')">Orijen</button>
+        <button class="brand-tab px-4 py-2 text-sm rounded-full border border-surface-200 text-surface-500 whitespace-nowrap" onclick="switchNewTab(this, 'new-champion')">Champion</button>
+      </div>
+
+      <div id="new-acana" class="new-panel">
+        <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+          <div class="rounded-xl overflow-hidden aspect-[3/4] lg:aspect-auto">
+            <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&h=800&fit=crop&q=80" alt="ACANA 2026 春季新品" class="w-full h-full object-cover">
+          </div>
+          <div class="product-scroll flex gap-4 overflow-x-auto pb-2">
+            <a href="#" class="flex-shrink-0 w-[180px] bg-white rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+              <span class="new-tag">NEW</span>
+              <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1585846416120-3a7354ed7d39?w=400&h=400&fit=crop&q=80" alt="ACANA 高蛋白低碳犬糧" class="product-img"></div>
+              <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 高蛋白低碳犬糧 - 草飼牛 11.4kg</p><p class="text-base font-bold text-brand-600">$2,780</p></div>
+            </a>
+            <a href="#" class="flex-shrink-0 w-[180px] bg-white rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+              <span class="new-tag">NEW</span>
+              <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=400&h=400&fit=crop&q=80" alt="ACANA 室內貓低敏配方" class="product-img"></div>
+              <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 室內貓低敏配方 4.5kg</p><p class="text-base font-bold text-brand-600">$1,480</p></div>
+            </a>
+            <a href="#" class="flex-shrink-0 w-[180px] bg-white rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+              <span class="new-tag">NEW</span>
+              <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop&crop=faces&q=80" alt="ACANA 幼犬成長配方" class="product-img"></div>
+              <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 幼犬成長配方 6kg</p><p class="text-base font-bold text-brand-600">$1,880</p></div>
+            </a>
+            <a href="#" class="flex-shrink-0 w-[180px] bg-white rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+              <span class="new-tag">NEW</span>
+              <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=400&fit=crop&q=80" alt="ACANA 鮮雞肉貓糧" class="product-img"></div>
+              <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 鮮雞肉貓糧 1.8kg</p><p class="text-base font-bold text-brand-600">$880</p></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div id="new-orijen" class="new-panel hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+          <div class="rounded-xl overflow-hidden aspect-[3/4] lg:aspect-auto">
+            <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=600&h=800&fit=crop&q=80" alt="Orijen 全新配方" class="w-full h-full object-cover">
+          </div>
+          <div class="product-scroll flex gap-4 overflow-x-auto pb-2">
+            <a href="#" class="flex-shrink-0 w-[180px] bg-white rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+              <span class="new-tag">NEW</span>
+              <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?w=400&h=400&fit=crop&q=80" alt="Orijen 全犬種牧場配方" class="product-img"></div>
+              <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">Orijen 全犬種牧場配方 11.4kg</p><p class="text-base font-bold text-brand-600">$3,480</p></div>
+            </a>
+            <a href="#" class="flex-shrink-0 w-[180px] bg-white rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+              <span class="new-tag">NEW</span>
+              <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=400&fit=crop&q=80" alt="Orijen 幼貓鮮雞配方" class="product-img"></div>
+              <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">Orijen 幼貓鮮雞配方 5.4kg</p><p class="text-base font-bold text-brand-600">$2,180</p></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div id="new-champion" class="new-panel hidden">
+        <div class="text-center py-12 text-surface-400 text-sm">此品牌目前無新品</div>
+      </div>
+    </section>
+
+    <!-- ===== TOP SELLERS ===== -->
+    <section class="px-4 sm:px-6 py-8 bg-white" aria-label="熱銷排行">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-surface-900">熱銷排行</h2>
+        <a href="#" class="text-sm text-brand-600 hover:text-brand-700 font-medium">查看全部 →</a>
+      </div>
+      <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+        <button class="brand-tab active px-4 py-2 text-sm rounded-full border border-surface-200 whitespace-nowrap" onclick="switchTopTab(this, 'top-acana')">ACANA</button>
+        <button class="brand-tab px-4 py-2 text-sm rounded-full border border-surface-200 text-surface-500 whitespace-nowrap" onclick="switchTopTab(this, 'top-orijen')">Orijen</button>
+        <button class="brand-tab px-4 py-2 text-sm rounded-full border border-surface-200 text-surface-500 whitespace-nowrap" onclick="switchTopTab(this, 'top-champion')">Champion</button>
+      </div>
+
+      <div id="top-acana" class="top-panel">
+        <div class="product-scroll flex gap-4 overflow-x-auto pb-2">
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-1">1</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400&h=400&fit=crop&q=80" alt="Top 1" class="product-img"></div>
+            <div class="p-3">
+              <p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 無穀犬糧 - 放牧羊肉 11.4kg</p>
+              <p class="text-base font-bold text-brand-600">$2,480</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-2">2</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=400&h=400&fit=crop&q=80" alt="Top 2" class="product-img"></div>
+            <div class="p-3">
+              <p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 單一蛋白犬糧 - 鴨肉 6kg</p>
+              <p class="text-base font-bold text-brand-600">$1,680</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-3">3</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=400&h=400&fit=crop&q=80" alt="Top 3" class="product-img"></div>
+            <div class="p-3">
+              <p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 室內貓無穀配方 4.5kg</p>
+              <p class="text-base font-bold text-brand-600">$1,380</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-other">4</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop&q=80" alt="Top 4" class="product-img"></div>
+            <div class="p-3">
+              <p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 海洋盛宴犬糧 11.4kg</p>
+              <p class="text-base font-bold text-brand-600">$2,680</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-other">5</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1583337130417-13571d0e4c42?w=400&h=400&fit=crop&q=80" alt="Top 5" class="product-img"></div>
+            <div class="p-3">
+              <p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 高齡犬配方 6kg</p>
+              <p class="text-base font-bold text-brand-600">$1,580</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-other">6</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&h=400&fit=crop&q=80" alt="Top 6" class="product-img"></div>
+            <div class="p-3">
+              <p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">ACANA 鮮雞幼犬配方 11.4kg</p>
+              <p class="text-base font-bold text-brand-600">$2,380</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div id="top-orijen" class="top-panel hidden">
+        <div class="product-scroll flex gap-4 overflow-x-auto pb-2">
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-1">1</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=400&fit=crop&q=80" alt="Orijen Top 1" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">Orijen 六種鮮魚犬糧 11.4kg</p><p class="text-base font-bold text-brand-600">$3,280</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+          <a href="#" class="flex-shrink-0 w-[180px] bg-surface-50 rounded-xl border border-surface-200 overflow-hidden card-hover relative">
+            <div class="top-badge top-2">2</div>
+            <div class="aspect-square overflow-hidden"><img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop&q=80" alt="Orijen Top 2" class="product-img"></div>
+            <div class="p-3"><p class="text-sm font-medium text-surface-800 line-clamp-2 mb-1">Orijen 原始獵食配方 6kg</p><p class="text-base font-bold text-brand-600">$2,180</p>
+              <button onclick="event.preventDefault(); openCartModal()" class="mt-2 w-full py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition">加入購物車</button>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div id="top-champion" class="top-panel hidden">
+        <div class="text-center py-12 text-surface-400 text-sm">此品牌目前無熱銷商品</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ADD TO CART MODAL -->
+  <div id="cartModal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeCartModal()"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col animate-slide-in">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-surface-200">
+        <h3 class="text-lg font-bold text-surface-900">加入購物車</h3>
+        <button onclick="closeCartModal()" class="p-1 hover:bg-surface-100 rounded-lg">
+          <svg class="w-5 h-5 text-surface-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6">
+        <div class="flex gap-4 mb-6">
+          <div class="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=200&h=200&fit=crop&q=80" alt="商品" class="w-full h-full object-cover">
+          </div>
+          <div>
+            <p class="font-medium text-surface-800 mb-1">ACANA 無穀犬糧 - 放牧羊肉</p>
+            <p class="text-lg font-bold text-brand-600">$2,480</p>
+          </div>
+        </div>
+        <div class="mb-6">
+          <label class="text-sm font-semibold text-surface-700 mb-2 block">規格</label>
+          <div class="flex flex-wrap gap-2">
+            <button class="px-4 py-2 text-sm border-2 border-brand-600 text-brand-600 rounded-lg font-medium bg-brand-50">11.4kg</button>
+            <button class="px-4 py-2 text-sm border border-surface-200 text-surface-600 rounded-lg hover:border-surface-300">6kg</button>
+            <button class="px-4 py-2 text-sm border border-surface-200 text-surface-600 rounded-lg hover:border-surface-300">2kg</button>
+          </div>
+        </div>
+        <div class="mb-6">
+          <label class="text-sm font-semibold text-surface-700 mb-2 block">數量</label>
+          <div class="flex items-center gap-3">
+            <button class="w-10 h-10 rounded-lg border border-surface-200 flex items-center justify-center text-surface-600 hover:bg-surface-50">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+            </button>
+            <span class="text-lg font-semibold w-12 text-center">1</span>
+            <button class="w-10 h-10 rounded-lg border border-surface-200 flex items-center justify-center text-surface-600 hover:bg-surface-50">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            <span class="text-sm font-semibold text-orange-700">可使用優惠券</span>
+          </div>
+          <p class="text-xs text-orange-600">訂單滿 $10,000 折 $500（有效期至 2026/06/30）</p>
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-surface-200">
+        <button onclick="closeCartModal()" class="w-full py-3 bg-brand-600 text-white font-semibold rounded-lg hover:bg-brand-700 transition">加入購物車 — $2,480</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-surface-900 text-surface-300 mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h4 class="text-sm font-semibold text-white mb-4">關於我們</h4>
+          <ul class="space-y-2 text-sm"><li><a href="#" class="hover:text-white transition">公司介紹</a></li><li><a href="#" class="hover:text-white transition">合作品牌</a></li><li><a href="#" class="hover:text-white transition">加入經銷</a></li></ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-white mb-4">客戶服務</h4>
+          <ul class="space-y-2 text-sm"><li><a href="#" class="hover:text-white transition">訂單查詢</a></li><li><a href="#" class="hover:text-white transition">退換貨政策</a></li><li><a href="#" class="hover:text-white transition">常見問題</a></li></ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-white mb-4">經銷商專區</h4>
+          <ul class="space-y-2 text-sm"><li><a href="#" class="hover:text-white transition">價格表下載</a></li><li><a href="#" class="hover:text-white transition">產品目錄</a></li><li><a href="#" class="hover:text-white transition">教育訓練</a></li></ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-white mb-4">聯絡方式</h4>
+          <ul class="space-y-2 text-sm"><li>service@fastpass.com.tw</li><li>02-2345-6789</li><li>週一至週五 9:00-18:00</li></ul>
+        </div>
+      </div>
+      <div class="border-t border-surface-700 pt-6 text-center text-xs text-surface-500">&copy; 2026 FastPass 跨品牌經銷商平台. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    let currentBanner = 0;
+    const totalBanners = 3;
+    function goToBanner(index) {
+      currentBanner = index;
+      document.getElementById('bannerTrack').style.transform = `translateX(-${index * 100}%)`;
+      document.querySelectorAll('.banner-dot').forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+    function nextBanner() { goToBanner((currentBanner + 1) % totalBanners); }
+    function prevBanner() { goToBanner((currentBanner - 1 + totalBanners) % totalBanners); }
+    setInterval(nextBanner, 5000);
+
+    function switchPromoTab(btn, panelId) {
+      btn.closest('section').querySelectorAll('.brand-tab').forEach(t => { t.classList.remove('active'); t.classList.add('text-surface-500'); });
+      btn.classList.add('active'); btn.classList.remove('text-surface-500');
+      btn.closest('section').querySelectorAll('.promo-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(panelId).classList.remove('hidden');
+    }
+    function switchNewTab(btn, panelId) {
+      btn.closest('section').querySelectorAll('.brand-tab').forEach(t => { t.classList.remove('active'); t.classList.add('text-surface-500'); });
+      btn.classList.add('active'); btn.classList.remove('text-surface-500');
+      btn.closest('section').querySelectorAll('.new-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(panelId).classList.remove('hidden');
+    }
+    function switchTopTab(btn, panelId) {
+      btn.closest('section').querySelectorAll('.brand-tab').forEach(t => { t.classList.remove('active'); t.classList.add('text-surface-500'); });
+      btn.classList.add('active'); btn.classList.remove('text-surface-500');
+      btn.closest('section').querySelectorAll('.top-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(panelId).classList.remove('hidden');
+    }
+    function openCartModal() { document.getElementById('cartModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    function closeCartModal() { document.getElementById('cartModal').classList.add('hidden'); document.body.style.overflow = ''; }
+  </script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FastPass 後台｜首頁編輯器</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { brand: { 50:'#fff7ed',100:'#ffedd5',200:'#fed7aa',400:'#fb923c',500:'#f97316',600:'#ea580c' } },
+        fontFamily: { sans: ['-apple-system','BlinkMacSystemFont','"Segoe UI"','Roboto','sans-serif'] }
+      }}
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 2px; }
+    .module-item { cursor: grab; } .module-item:active { cursor: grabbing; }
+    .toggle-switch { position: relative; width: 36px; height: 20px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; background: #e2e8f0; border-radius: 10px; transition: .3s; }
+    .slider:before { content:''; position:absolute; width:16px; height:16px; left:2px; bottom:2px; background:white; border-radius:50%; transition:.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+    input:checked + .slider { background: #f97316; }
+    input:checked + .slider:before { transform: translateX(16px); }
+    .setting-section { border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem; margin-bottom: 1rem; }
+    .setting-section:last-child { border-bottom: none; margin-bottom: 0; }
+  </style>
+</head>
+<body class="bg-slate-100 text-gray-900 antialiased font-sans flex min-h-screen">
+
+<!-- SIDEBAR (narrow) -->
+<aside class="w-14 bg-white border-r border-gray-100 flex flex-col items-center py-4 fixed inset-y-0 left-0 z-30 gap-1">
+  <a href="../index.html" class="w-9 h-9 bg-brand-500 rounded-xl flex items-center justify-center mb-3 shadow-md shadow-brand-200">
+    <i class="fa-solid fa-bolt text-white text-sm"></i>
+  </a>
+  <a href="store-list.html" title="賣場列表" class="w-9 h-9 rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center transition-colors">
+    <i class="fa-solid fa-store text-sm"></i>
+  </a>
+  <a href="#" title="首頁編輯" class="w-9 h-9 rounded-xl bg-brand-50 text-brand-500 flex items-center justify-center">
+    <i class="fa-solid fa-layer-group text-sm"></i>
+  </a>
+  <a href="#" title="商品" class="w-9 h-9 rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center transition-colors">
+    <i class="fa-solid fa-box text-sm"></i>
+  </a>
+  <a href="#" title="報表" class="w-9 h-9 rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center transition-colors">
+    <i class="fa-solid fa-chart-bar text-sm"></i>
+  </a>
+  <div class="mt-auto">
+    <a href="../index.html" title="前台" class="w-9 h-9 rounded-xl text-gray-400 hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center transition-colors">
+      <i class="fa-solid fa-arrow-left text-sm"></i>
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN WRAPPER -->
+<div class="flex-1 ml-14 flex flex-col">
+  <!-- TOP BAR -->
+  <header class="sticky top-0 z-20 bg-white border-b border-gray-100 h-14 flex items-center justify-between px-4">
+    <div class="flex items-center gap-2 text-sm">
+      <a href="store-list.html" class="text-gray-400 hover:text-gray-600 transition-colors">賣場列表</a>
+      <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+      <a href="store-manage.html" class="text-gray-400 hover:text-gray-600 transition-colors">台灣賣場</a>
+      <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+      <span class="text-gray-700 font-medium">首頁編輯器</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="../index.html" target="_blank" class="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+        <i class="fa-solid fa-eye mr-1"></i>預覽
+      </a>
+      <button class="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+        草稿已儲存
+      </button>
+      <button class="px-4 py-1.5 text-xs text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors shadow-sm shadow-brand-200 font-medium">
+        <i class="fa-solid fa-cloud-arrow-up mr-1"></i>發布
+      </button>
+      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-semibold ml-1">王</div>
+    </div>
+  </header>
+
+  <!-- EDITOR LAYOUT -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- LEFT PANEL: Module List -->
+    <div class="w-64 bg-white border-r border-gray-100 flex flex-col overflow-y-auto">
+      <div class="p-4 border-b border-gray-100">
+        <p class="text-xs font-bold text-gray-700 uppercase tracking-widest">首頁模組</p>
+        <p class="text-xs text-gray-400 mt-0.5">拖拉調整顯示順序</p>
+      </div>
+      <div class="p-3 space-y-2 flex-1">
+        <!-- Module items -->
+        <div class="module-item flex items-center gap-2.5 p-3 rounded-xl border border-gray-100 bg-white hover:border-brand-200 hover:bg-brand-50/30 transition-all group">
+          <i class="fa-solid fa-grip-vertical text-gray-300 group-hover:text-gray-400 text-xs"></i>
+          <div class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-image text-slate-500 text-xs"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-gray-800 truncate">Hero Banner</p>
+            <p class="text-xs text-gray-400">輪播 · 3 張</p>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"></span>
+        </div>
+
+        <div class="module-item flex items-center gap-2.5 p-3 rounded-xl border border-gray-100 bg-white hover:border-brand-200 hover:bg-brand-50/30 transition-all group">
+          <i class="fa-solid fa-grip-vertical text-gray-300 group-hover:text-gray-400 text-xs"></i>
+          <div class="w-7 h-7 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-store text-orange-500 text-xs"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-gray-800 truncate">品牌入口</p>
+            <p class="text-xs text-gray-400">4 個品牌</p>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"></span>
+        </div>
+
+        <div class="module-item flex items-center gap-2.5 p-3 rounded-xl border border-gray-100 bg-white hover:border-brand-200 hover:bg-brand-50/30 transition-all group">
+          <i class="fa-solid fa-grip-vertical text-gray-300 group-hover:text-gray-400 text-xs"></i>
+          <div class="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-tag text-amber-500 text-xs"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-gray-800 truncate">優惠活動</p>
+            <p class="text-xs text-gray-400">3 個活動</p>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"></span>
+        </div>
+
+        <!-- Active module (highlighted) -->
+        <div class="module-item flex items-center gap-2.5 p-3 rounded-xl border border-brand-300 bg-brand-50 shadow-sm">
+          <i class="fa-solid fa-grip-vertical text-brand-300 text-xs"></i>
+          <div class="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center flex-shrink-0 shadow-sm shadow-brand-200">
+            <i class="fa-solid fa-box text-white text-xs"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-brand-700 truncate">新品商品區塊</p>
+            <p class="text-xs text-brand-400">格狀 · 4 件</p>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"></span>
+        </div>
+
+        <div class="module-item flex items-center gap-2.5 p-3 rounded-xl border border-gray-100 bg-white hover:border-brand-200 hover:bg-brand-50/30 transition-all group">
+          <i class="fa-solid fa-grip-vertical text-gray-300 group-hover:text-gray-400 text-xs"></i>
+          <div class="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-fire text-red-500 text-xs"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-gray-800 truncate">熱銷商品區塊</p>
+            <p class="text-xs text-gray-400">格狀 · 4 件</p>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"></span>
+        </div>
+
+        <div class="module-item flex items-center gap-2.5 p-3 rounded-xl border border-dashed border-gray-200 bg-gray-50 hover:border-brand-200 hover:bg-brand-50/20 transition-all cursor-pointer">
+          <div class="w-full flex items-center justify-center gap-1.5 text-gray-400 hover:text-brand-500 transition-colors py-0.5">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span class="text-xs">新增模組</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Settings -->
+    <div class="flex-1 overflow-y-auto p-5 bg-slate-50">
+      <!-- Panel Header -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <div class="flex items-center gap-3 p-4 border-b border-gray-50">
+          <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center shadow-sm shadow-brand-200">
+            <i class="fa-solid fa-box text-white text-sm"></i>
+          </div>
+          <div class="flex-1">
+            <h2 class="font-bold text-gray-900 text-sm">新品商品區塊</h2>
+            <p class="text-xs text-gray-400">商品模組設定</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-400">顯示狀態</span>
+            <label class="toggle-switch">
+              <input type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Settings Body -->
+        <div class="p-5 space-y-0">
+
+          <!-- Style Setting -->
+          <div class="setting-section">
+            <p class="text-xs font-bold text-gray-700 mb-3">樣式設定</p>
+            <div class="flex gap-2">
+              <button class="flex-1 py-2 text-xs font-medium text-gray-500 border border-gray-200 rounded-xl hover:border-gray-300 bg-white transition-colors">無樣式</button>
+              <button class="flex-1 py-2 text-xs font-medium text-white bg-brand-500 border border-brand-500 rounded-xl shadow-sm shadow-brand-200">新品</button>
+              <button class="flex-1 py-2 text-xs font-medium text-gray-500 border border-gray-200 rounded-xl hover:border-gray-300 bg-white transition-colors">熱銷</button>
+            </div>
+          </div>
+
+          <!-- See More Setting -->
+          <div class="setting-section">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-xs font-bold text-gray-700">看更多設定</p>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="space-y-2">
+              <div>
+                <label class="text-xs text-gray-400 mb-1 block">按鈕文字</label>
+                <input type="text" value="查看全部新品" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-brand-400 transition-colors bg-white">
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 mb-1 block">導向連結</label>
+                <input type="text" value="/products/new-arrivals" class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-brand-400 transition-colors bg-white font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- Brand Selection -->
+          <div class="setting-section">
+            <p class="text-xs font-bold text-gray-700 mb-3">品牌選擇</p>
+            <div class="grid grid-cols-2 gap-2">
+              <button class="flex items-center gap-2 p-2.5 rounded-xl border border-brand-300 bg-brand-50 text-brand-700 text-xs font-medium">
+                <div class="w-5 h-5 rounded-md bg-orange-500 flex items-center justify-center">
+                  <i class="fa-solid fa-cat text-white text-xs"></i>
+                </div>
+                汪喵星球
+                <i class="fa-solid fa-check ml-auto text-brand-500 text-xs"></i>
+              </button>
+              <button class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 bg-white text-gray-600 text-xs hover:border-gray-300 transition-colors">
+                <div class="w-5 h-5 rounded-md bg-teal-500 flex items-center justify-center">
+                  <i class="fa-solid fa-dog text-white text-xs"></i>
+                </div>
+                怪獸部落
+              </button>
+              <button class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 bg-white text-gray-600 text-xs hover:border-gray-300 transition-colors">
+                <div class="w-5 h-5 rounded-md bg-rose-500 flex items-center justify-center">
+                  <i class="fa-solid fa-shield-heart text-white text-xs"></i>
+                </div>
+                Hero Mama
+              </button>
+              <button class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 bg-white text-gray-600 text-xs hover:border-gray-300 transition-colors">
+                <div class="w-5 h-5 rounded-md bg-violet-500 flex items-center justify-center">
+                  <i class="fa-solid fa-snowflake text-white text-xs"></i>
+                </div>
+                超凝小姐
+              </button>
+            </div>
+          </div>
+
+          <!-- Product List -->
+          <div class="setting-section">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-xs font-bold text-gray-700">已選商品（4 件）</p>
+              <button class="text-xs text-brand-500 hover:text-brand-600 font-medium">
+                <i class="fa-solid fa-plus mr-1"></i>新增商品
+              </button>
+            </div>
+            <!-- Search -->
+            <div class="relative mb-3">
+              <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+              <input type="text" placeholder="搜尋已選商品..." class="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-brand-400 transition-colors">
+            </div>
+            <!-- Product items -->
+            <div class="space-y-2">
+              <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 border border-gray-100 group">
+                <i class="fa-solid fa-grip-vertical text-gray-300 text-xs cursor-grab"></i>
+                <div class="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                  <img src="https://images.unsplash.com/photo-1615249654950-9ebe3e1b90f5?auto=format&fit=crop&w=80&q=60" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-medium text-gray-900 truncate">春日鮮食罐 — 鮭魚南瓜配方 85g</p>
+                  <p class="text-xs text-gray-400">SKU: WM-001 · NT$ 65</p>
+                </div>
+                <button class="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-lg bg-red-50 flex items-center justify-center text-red-400 hover:text-red-600 transition-all flex-shrink-0">
+                  <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+              </div>
+              <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 border border-gray-100 group">
+                <i class="fa-solid fa-grip-vertical text-gray-300 text-xs cursor-grab"></i>
+                <div class="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                  <img src="https://images.unsplash.com/photo-1589924691995-400dc9eee119?auto=format&fit=crop&w=80&q=60" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-medium text-gray-900 truncate">Monster 能量訓練零食 150g</p>
+                  <p class="text-xs text-gray-400">SKU: GB-023 · NT$ 280</p>
+                </div>
+                <button class="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-lg bg-red-50 flex items-center justify-center text-red-400 hover:text-red-600 transition-all flex-shrink-0">
+                  <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+              </div>
+              <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-amber-50 border border-amber-200 group">
+                <i class="fa-solid fa-grip-vertical text-amber-300 text-xs cursor-grab"></i>
+                <div class="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                  <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=80&q=60" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-medium text-gray-900 truncate">天然草本沐浴乳 300ml</p>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <p class="text-xs text-gray-400">SKU: HM-007</p>
+                    <span class="px-1.5 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-md font-medium">
+                      <i class="fa-solid fa-triangle-exclamation mr-0.5"></i>庫存不足
+                    </span>
+                  </div>
+                </div>
+                <button class="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-lg bg-red-50 flex items-center justify-center text-red-400 hover:text-red-600 transition-all flex-shrink-0">
+                  <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+              </div>
+              <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-gray-50 border border-gray-100 group">
+                <i class="fa-solid fa-grip-vertical text-gray-300 text-xs cursor-grab"></i>
+                <div class="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                  <img src="https://images.unsplash.com/photo-1516750105099-4b8a83e501b1?auto=format&fit=crop&w=80&q=60" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-medium text-gray-900 truncate">聯名限定款礦砂 6L</p>
+                  <p class="text-xs text-gray-400">SKU: CL-101 · NT$ 599</p>
+                </div>
+                <button class="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-lg bg-red-50 flex items-center justify-center text-red-400 hover:text-red-600 transition-all flex-shrink-0">
+                  <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Warning -->
+            <div class="mt-3 p-2.5 rounded-xl bg-amber-50 border border-amber-100 flex items-start gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-amber-500 text-xs mt-0.5"></i>
+              <p class="text-xs text-amber-700">1 件商品庫存不足，前台將自動隱藏，顯示商品數量將重新計算。</p>
+            </div>
+          </div>
+
+          <!-- Display Settings -->
+          <div class="setting-section">
+            <p class="text-xs font-bold text-gray-700 mb-3">前台顯示方式</p>
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs text-gray-400 mb-1.5 block">排列方式</label>
+                <div class="flex gap-2">
+                  <button class="flex-1 py-2 text-xs font-medium text-white bg-brand-500 rounded-xl border border-brand-500">
+                    <i class="fa-solid fa-grip mr-1"></i>格狀
+                  </button>
+                  <button class="flex-1 py-2 text-xs font-medium text-gray-500 border border-gray-200 rounded-xl hover:border-gray-300 bg-white transition-colors">
+                    <i class="fa-solid fa-film mr-1"></i>輪播
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 mb-1.5 block">每列顯示數量</label>
+                <div class="flex gap-1.5">
+                  <button class="w-9 py-1.5 text-xs text-gray-500 border border-gray-200 rounded-lg hover:border-gray-300 bg-white">1</button>
+                  <button class="w-9 py-1.5 text-xs text-gray-500 border border-gray-200 rounded-lg hover:border-gray-300 bg-white">2</button>
+                  <button class="w-9 py-1.5 text-xs text-gray-500 border border-gray-200 rounded-lg hover:border-gray-300 bg-white">3</button>
+                  <button class="w-9 py-1.5 text-xs font-bold text-brand-600 border border-brand-400 rounded-lg bg-brand-50">4</button>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 mb-1.5 block">總顯示商品數量</label>
+                <div class="flex gap-1.5">
+                  <button class="px-3 py-1.5 text-xs font-bold text-brand-600 border border-brand-400 rounded-lg bg-brand-50">4</button>
+                  <button class="px-3 py-1.5 text-xs text-gray-500 border border-gray-200 rounded-lg hover:border-gray-300 bg-white">8</button>
+                  <button class="px-3 py-1.5 text-xs text-gray-500 border border-gray-200 rounded-lg hover:border-gray-300 bg-white">16</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Panel Footer -->
+        <div class="px-5 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+          <button class="text-xs text-red-400 hover:text-red-600 transition-colors">
+            <i class="fa-solid fa-trash mr-1"></i>刪除此模組
+          </button>
+          <button class="px-4 py-2 text-xs text-white bg-brand-500 hover:bg-brand-600 rounded-xl transition-colors shadow-sm shadow-brand-200 font-medium">
+            儲存設定
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview hint -->
+      <div class="flex items-center gap-2 p-3 bg-white rounded-xl border border-gray-100 text-xs text-gray-400">
+        <i class="fa-solid fa-circle-info text-brand-400"></i>
+        設定儲存後，點擊右上角「預覽」可即時查看前台效果。
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

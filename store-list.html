@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FastPass 後台｜賣場列表</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#fff7ed', 100:'#ffedd5', 400:'#fb923c', 500:'#f97316', 600:'#ea580c' },
+          },
+          fontFamily: { sans: ['-apple-system','BlinkMacSystemFont','"SF Pro Text"','"Segoe UI"','Roboto','sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #f8fafc; } ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-gray-900 antialiased font-sans flex min-h-screen">
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="w-56 bg-white border-r border-gray-100 flex flex-col fixed inset-y-0 left-0 z-30">
+  <div class="px-4 py-4 border-b border-gray-100">
+    <a href="../index.html" class="flex items-center gap-2">
+      <div class="w-7 h-7 bg-brand-500 rounded-lg flex items-center justify-center">
+        <i class="fa-solid fa-bolt text-white text-xs"></i>
+      </div>
+      <span class="font-bold text-gray-900">FastPass</span>
+    </a>
+    <span class="text-xs text-gray-400 ml-9">管理後台</span>
+  </div>
+  <nav class="flex-1 px-3 py-4 space-y-1">
+    <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest px-2 mb-2">首頁管理</p>
+    <a href="store-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-brand-50 text-brand-600 text-sm font-medium">
+      <i class="fa-solid fa-store w-4 text-center"></i> 賣場列表
+    </a>
+    <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 text-sm transition-colors">
+      <i class="fa-solid fa-layer-group w-4 text-center"></i> 模組管理
+    </a>
+    <div class="pt-3">
+      <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest px-2 mb-2">商品管理</p>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 text-sm transition-colors">
+        <i class="fa-solid fa-box w-4 text-center"></i> 商品列表
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 text-sm transition-colors">
+        <i class="fa-solid fa-tag w-4 text-center"></i> 優惠活動
+      </a>
+    </div>
+    <div class="pt-3">
+      <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest px-2 mb-2">報表分析</p>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 text-sm transition-colors">
+        <i class="fa-solid fa-chart-bar w-4 text-center"></i> 銷售報表
+      </a>
+    </div>
+  </nav>
+  <div class="p-3 border-t border-gray-100">
+    <a href="../index.html" class="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 text-sm transition-colors">
+      <i class="fa-solid fa-arrow-left w-4 text-center"></i> 回到前台
+    </a>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="flex-1 ml-56">
+  <!-- Top Bar -->
+  <header class="sticky top-0 z-20 bg-white border-b border-gray-100 h-14 flex items-center justify-between px-6">
+    <div class="flex items-center gap-2 text-sm">
+      <span class="text-gray-400">首頁管理</span>
+      <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+      <span class="text-gray-700 font-medium">賣場列表</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+        <input type="text" placeholder="搜尋賣場名稱..." class="pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-brand-400 w-52 transition-colors">
+      </div>
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-sm font-semibold cursor-pointer">王</div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="p-6 max-w-5xl">
+    <!-- Page Title -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900">賣場列表</h1>
+        <p class="text-sm text-gray-400 mt-0.5">選擇要管理首頁內容的賣場</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <select class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:border-brand-400">
+          <option>全部地區</option>
+          <option>台灣 TW</option>
+          <option>香港 HK</option>
+          <option>美國 US</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center">
+          <i class="fa-solid fa-store text-brand-500"></i>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">賣場總數</p>
+          <p class="text-xl font-bold text-gray-900">3</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+          <i class="fa-solid fa-circle-check text-green-500"></i>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">已設定首頁</p>
+          <p class="text-xl font-bold text-gray-900">2</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+          <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">未設定首頁</p>
+          <p class="text-xl font-bold text-gray-900">1</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Store Cards -->
+    <div class="space-y-3">
+      <!-- Store TW -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:border-brand-200 hover:shadow-md transition-all group">
+        <div class="flex items-center p-5 gap-5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-400 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-sky-200">
+            <span class="text-white font-bold text-sm">TW</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-gray-900">台灣賣場</h3>
+              <span class="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full font-medium">已設定首頁</span>
+              <span class="px-2 py-0.5 text-xs bg-gray-100 text-gray-500 rounded-full">TWD</span>
+            </div>
+            <p class="text-xs text-gray-400 truncate">https://tw.fastpass-b2b.com</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class="text-xs text-gray-400">上次更新：2026/03/25</span>
+            <a href="store-manage.html" class="px-4 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-xl transition-colors shadow-sm shadow-brand-200">
+              管理首頁 <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Module preview -->
+        <div class="px-5 pb-4 flex items-center gap-2">
+          <span class="text-xs text-gray-400 mr-1">啟用模組：</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">Hero Banner</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">品牌入口</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">優惠活動</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">新品</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">熱銷商品</span>
+        </div>
+      </div>
+
+      <!-- Store HK -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:border-brand-200 hover:shadow-md transition-all group">
+        <div class="flex items-center p-5 gap-5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400 to-red-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-rose-200">
+            <span class="text-white font-bold text-sm">HK</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-gray-900">香港賣場</h3>
+              <span class="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full font-medium">已設定首頁</span>
+              <span class="px-2 py-0.5 text-xs bg-gray-100 text-gray-500 rounded-full">HKD</span>
+            </div>
+            <p class="text-xs text-gray-400 truncate">https://hk.fastpass-b2b.com</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class="text-xs text-gray-400">上次更新：2026/03/20</span>
+            <a href="store-manage.html" class="px-4 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-xl transition-colors shadow-sm shadow-brand-200">
+              管理首頁 <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        <div class="px-5 pb-4 flex items-center gap-2">
+          <span class="text-xs text-gray-400 mr-1">啟用模組：</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">Hero Banner</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">品牌入口</span>
+          <span class="px-2 py-0.5 text-xs bg-slate-100 text-slate-600 rounded-md">新品</span>
+        </div>
+      </div>
+
+      <!-- Store US -->
+      <div class="bg-white rounded-2xl border border-amber-100 shadow-sm overflow-hidden hover:border-amber-200 hover:shadow-md transition-all group">
+        <div class="flex items-center p-5 gap-5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-200">
+            <span class="text-white font-bold text-sm">US</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-gray-900">美國賣場</h3>
+              <span class="px-2 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-full font-medium">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i>尚未設定首頁
+              </span>
+              <span class="px-2 py-0.5 text-xs bg-gray-100 text-gray-500 rounded-full">USD</span>
+            </div>
+            <p class="text-xs text-gray-400 truncate">https://us.fastpass-b2b.com</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class="text-xs text-gray-400">尚未設定</span>
+            <a href="store-manage.html" class="px-4 py-2 text-sm font-medium text-brand-600 border border-brand-200 bg-brand-50 hover:bg-brand-100 rounded-xl transition-colors">
+              立即設定 <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        <div class="px-5 pb-4">
+          <span class="text-xs text-amber-500"><i class="fa-solid fa-circle-info mr-1"></i>此賣場尚未配置任何首頁模組，請進入管理頁面開始設定。</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

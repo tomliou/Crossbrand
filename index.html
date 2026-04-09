@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FastPass 經銷商專站｜首頁</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#fff7ed', 100:'#ffedd5', 200:'#fed7aa', 400:'#fb923c', 500:'#f97316', 600:'#ea580c', 700:'#c2410c' },
+          },
+          fontFamily: { sans: ['-apple-system','BlinkMacSystemFont','"SF Pro Text"','"Segoe UI"','Roboto','"Helvetica Neue"','Arial','sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .hero-slide { transition: opacity 0.6s ease; }
+    .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+    .badge-hot { background: linear-gradient(135deg, #f97316, #ef4444); }
+    .badge-sale { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+    .nav-link { position: relative; }
+    .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#f97316; transition:width 0.2s; }
+    .nav-link:hover::after, .nav-link.active::after { width:100%; }
+    #mobileMenu { transition: all 0.3s ease; }
+    .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased font-sans">
+
+<!-- ===== TOP NAVIGATION ===== -->
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center gap-4 md:gap-8">
+      <a href="index.html" class="flex items-center gap-2 flex-shrink-0">
+        <div class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-bolt text-white text-xs md:text-sm"></i>
+        </div>
+        <span class="font-bold text-lg md:text-xl tracking-tight text-gray-900">FastPass</span>
+      </a>
+      <!-- Desktop Nav Links -->
+      <div class="hidden lg:flex items-center gap-6">
+        <a href="#" class="nav-link active text-brand-500 text-sm font-medium pb-1">首頁</a>
+        <a href="#" class="nav-link text-gray-500 hover:text-gray-900 text-sm font-medium pb-1">汪喵星球</a>
+        <a href="#" class="nav-link text-gray-500 hover:text-gray-900 text-sm font-medium pb-1">怪獸部落</a>
+        <a href="#" class="nav-link text-gray-500 hover:text-gray-900 text-sm font-medium pb-1">Hero Mama</a>
+        <a href="#" class="nav-link text-gray-500 hover:text-gray-900 text-sm font-medium pb-1">超凝小姐</a>
+        <a href="#" class="nav-link text-gray-500 hover:text-gray-900 text-sm font-medium pb-1">優惠活動</a>
+      </div>
+    </div>
+    <!-- Right -->
+    <div class="flex items-center gap-1 md:gap-2">
+      <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+        <i class="fa-solid fa-magnifying-glass text-base md:text-lg"></i>
+      </button>
+      <button class="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+        <i class="fa-solid fa-cart-shopping text-base md:text-lg"></i>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-brand-500 rounded-full text-white text-xs flex items-center justify-center leading-none">3</span>
+      </button>
+      <div class="hidden md:flex items-center gap-2 cursor-pointer ml-1">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-sm font-semibold">王</div>
+        <div class="hidden lg:block">
+          <p class="text-sm font-medium text-gray-700 leading-tight">王小明</p>
+          <p class="text-xs text-gray-400">白金經銷商</p>
+        </div>
+      </div>
+      <a href="pages/store-list.html" class="hidden md:flex items-center gap-1 ml-1 px-3 py-1.5 text-xs font-medium text-brand-600 border border-brand-200 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors">
+        <i class="fa-solid fa-gear"></i><span class="hidden lg:inline ml-1">後台管理</span>
+      </a>
+      <!-- Mobile hamburger -->
+      <button onclick="toggleMenu()" class="lg:hidden p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors ml-1">
+        <i class="fa-solid fa-bars text-base" id="menuIcon"></i>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-gray-100 px-4 pb-4">
+    <div class="pt-3 space-y-1">
+      <a href="#" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-brand-600 bg-brand-50">首頁</a>
+      <a href="#" class="block px-3 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-50">汪喵星球</a>
+      <a href="#" class="block px-3 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-50">怪獸部落</a>
+      <a href="#" class="block px-3 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-50">Hero Mama</a>
+      <a href="#" class="block px-3 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-50">超凝小姐</a>
+      <a href="#" class="block px-3 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-50">優惠活動</a>
+      <div class="pt-2 border-t border-gray-100 mt-2">
+        <a href="pages/store-list.html" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-brand-600 hover:bg-brand-50">
+          <i class="fa-solid fa-gear mr-2"></i>後台管理
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO BANNER ===== -->
+<section class="relative overflow-hidden bg-gray-900">
+  <div id="heroSlider" class="relative h-64 sm:h-80 md:h-[420px] lg:h-[480px]">
+    <!-- Slide 1 -->
+    <div class="hero-slide absolute inset-0 flex items-center" id="slide-0">
+      <img src="https://loremflickr.com/1440/480/dog,puppy?lock=1"
+           alt="春季新品" class="absolute inset-0 w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-r from-gray-900/85 via-gray-900/50 to-transparent"></div>
+      <div class="relative max-w-screen-xl mx-auto px-4 md:px-6 w-full">
+        <div class="max-w-xs sm:max-w-sm md:max-w-lg">
+          <span class="inline-block px-2.5 py-1 bg-brand-500 text-white text-xs font-semibold rounded-full mb-3 md:mb-4">汪喵星球 × 春季新品</span>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-2 md:mb-3">春日寵愛計畫<br>全品項 85 折起</h1>
+          <p class="text-gray-300 text-xs sm:text-sm md:text-base mb-4 md:mb-6 hidden sm:block">2026.03.01 – 03.31 限時優惠，指定商品加碼贈品</p>
+          <div class="flex gap-2 md:gap-3">
+            <button class="px-4 md:px-6 py-2 md:py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-sm md:text-base font-semibold rounded-xl transition-colors shadow-lg shadow-brand-500/30">
+              立即選購 <i class="fa-solid fa-arrow-right ml-1 md:ml-2"></i>
+            </button>
+            <button class="px-4 md:px-6 py-2 md:py-2.5 bg-white/10 hover:bg-white/20 text-white text-sm md:text-base font-medium rounded-xl backdrop-blur-sm border border-white/20 transition-colors hidden sm:block">
+              了解詳情
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 2 -->
+    <div class="hero-slide absolute inset-0 flex items-center opacity-0" id="slide-1">
+      <img src="https://loremflickr.com/1440/480/dog,pet?lock=2"
+           alt="Monster 能量系列" class="absolute inset-0 w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-r from-teal-900/85 via-teal-900/50 to-transparent"></div>
+      <div class="relative max-w-screen-xl mx-auto px-4 md:px-6 w-full">
+        <div class="max-w-xs sm:max-w-sm md:max-w-lg">
+          <span class="inline-block px-2.5 py-1 bg-teal-500 text-white text-xs font-semibold rounded-full mb-3 md:mb-4">怪獸部落 × 新品上市</span>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-2 md:mb-3">Monster 能量系列<br>正式開賣！</h1>
+          <p class="text-gray-300 text-xs sm:text-sm md:text-base mb-4 md:mb-6 hidden sm:block">高蛋白配方，為您的毛孩注入無限活力</p>
+          <div class="flex gap-2 md:gap-3">
+            <button class="px-4 md:px-6 py-2 md:py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-teal-500/30">
+              搶先預訂 <i class="fa-solid fa-arrow-right ml-1 md:ml-2"></i>
+            </button>
+            <button class="px-4 md:px-6 py-2 md:py-2.5 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl backdrop-blur-sm border border-white/20 transition-colors hidden sm:block">
+              了解詳情
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 3 -->
+    <div class="hero-slide absolute inset-0 flex items-center opacity-0" id="slide-2">
+      <img src="https://loremflickr.com/1440/480/cat,cute?lock=3"
+           alt="超凝小姐聯名" class="absolute inset-0 w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-r from-purple-900/85 via-purple-900/50 to-transparent"></div>
+      <div class="relative max-w-screen-xl mx-auto px-4 md:px-6 w-full">
+        <div class="max-w-xs sm:max-w-sm md:max-w-lg">
+          <span class="inline-block px-2.5 py-1 bg-purple-500 text-white text-xs font-semibold rounded-full mb-3 md:mb-4">超凝小姐 × 聯名限定</span>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-2 md:mb-3">貓砂界的奢華革命<br>聯名款限量登場</h1>
+          <p class="text-gray-300 text-xs sm:text-sm md:text-base mb-4 md:mb-6 hidden sm:block">極速凝結技術，鎖臭效果提升 300%</p>
+          <div class="flex gap-2 md:gap-3">
+            <button class="px-4 md:px-6 py-2 md:py-2.5 bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-purple-500/30">
+              查看商品 <i class="fa-solid fa-arrow-right ml-1 md:ml-2"></i>
+            </button>
+            <button class="px-4 md:px-6 py-2 md:py-2.5 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl backdrop-blur-sm border border-white/20 transition-colors hidden sm:block">
+              了解詳情
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Dots -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+      <button onclick="goToSlide(0)" id="dot-0" class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-white transition-all"></button>
+      <button onclick="goToSlide(1)" id="dot-1" class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-white/40 hover:bg-white/70 transition-all"></button>
+      <button onclick="goToSlide(2)" id="dot-2" class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-white/40 hover:bg-white/70 transition-all"></button>
+    </div>
+    <!-- Prev/Next (desktop only) -->
+    <button onclick="prevSlide()" class="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full items-center justify-center text-white border border-white/20 transition-colors z-10">
+      <i class="fa-solid fa-chevron-left text-sm"></i>
+    </button>
+    <button onclick="nextSlide()" class="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full items-center justify-center text-white border border-white/20 transition-colors z-10">
+      <i class="fa-solid fa-chevron-right text-sm"></i>
+    </button>
+  </div>
+</section>
+
+<!-- ===== BRAND ENTRY ===== -->
+<section class="bg-white border-b border-gray-100 py-6 md:py-8">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-6">
+    <div class="flex items-center justify-between mb-4 md:mb-5">
+      <h2 class="text-xs md:text-sm font-semibold text-gray-400 uppercase tracking-widest">合作品牌</h2>
+      <a href="#" class="text-xs text-brand-500 hover:text-brand-600 font-medium">查看全部 <i class="fa-solid fa-arrow-right ml-1"></i></a>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+      <a href="#" class="group flex flex-col items-center gap-2 md:gap-3 p-4 md:p-5 rounded-2xl border border-gray-100 hover:border-brand-200 hover:bg-brand-50/30 transition-all">
+        <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-200 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-cat text-white text-xl md:text-2xl"></i>
+        </div>
+        <div class="text-center">
+          <p class="font-semibold text-gray-800 text-xs md:text-sm">汪喵星球</p>
+          <p class="text-xs text-gray-400 mt-0.5 hidden sm:block">貓犬全品項</p>
+        </div>
+      </a>
+      <a href="#" class="group flex flex-col items-center gap-2 md:gap-3 p-4 md:p-5 rounded-2xl border border-gray-100 hover:border-teal-200 hover:bg-teal-50/30 transition-all">
+        <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-teal-200 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-dog text-white text-xl md:text-2xl"></i>
+        </div>
+        <div class="text-center">
+          <p class="font-semibold text-gray-800 text-xs md:text-sm">怪獸部落</p>
+          <p class="text-xs text-gray-400 mt-0.5 hidden sm:block">機能零食專品</p>
+        </div>
+      </a>
+      <a href="#" class="group flex flex-col items-center gap-2 md:gap-3 p-4 md:p-5 rounded-2xl border border-gray-100 hover:border-rose-200 hover:bg-rose-50/30 transition-all">
+        <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-lg shadow-rose-200 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-shield-heart text-white text-xl md:text-2xl"></i>
+        </div>
+        <div class="text-center">
+          <p class="font-semibold text-gray-800 text-xs md:text-sm">Hero Mama</p>
+          <p class="text-xs text-gray-400 mt-0.5 hidden sm:block">親子寵物護理</p>
+        </div>
+      </a>
+      <a href="#" class="group flex flex-col items-center gap-2 md:gap-3 p-4 md:p-5 rounded-2xl border border-gray-100 hover:border-violet-200 hover:bg-violet-50/30 transition-all">
+        <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center shadow-lg shadow-violet-200 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-snowflake text-white text-xl md:text-2xl"></i>
+        </div>
+        <div class="text-center">
+          <p class="font-semibold text-gray-800 text-xs md:text-sm">超凝小姐</p>
+          <p class="text-xs text-gray-400 mt-0.5 hidden sm:block">貓砂專品</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROMOTION ENTRY ===== -->
+<section class="py-8 md:py-12 bg-gray-50">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-6">
+    <div class="flex items-center justify-between mb-4 md:mb-6">
+      <div>
+        <h2 class="text-lg md:text-xl font-bold text-gray-900">優惠活動</h2>
+        <p class="text-xs md:text-sm text-gray-400 mt-0.5">限時促銷，把握補貨時機</p>
+      </div>
+      <a href="#" class="px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-brand-600 border border-brand-200 bg-white rounded-xl hover:bg-brand-50 transition-colors font-medium">查看全部</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+      <!-- Promo 1 -->
+      <div class="card-hover bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="h-32 md:h-36 relative overflow-hidden bg-gray-200">
+          <img src="https://loremflickr.com/600/300/dog,cute?lock=4" alt="" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <span class="absolute top-3 left-3 px-2.5 py-1 bg-orange-500 text-white text-xs font-bold rounded-lg">汪喵星球</span>
+          <span class="absolute bottom-3 right-3 px-2 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs rounded-md border border-white/20">剩 8 天</span>
+        </div>
+        <div class="p-3 md:p-4">
+          <h3 class="font-bold text-gray-900 text-sm mb-1">春季囤貨節 — 滿萬送千</h3>
+          <p class="text-xs text-gray-500 mb-3 leading-relaxed">單筆訂單滿 NT$10,000 立贈 NT$1,000 購物金，可累計使用</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-orange-600 font-semibold bg-orange-50 px-2 py-1 rounded-lg">門檻：NT$ 10,000</span>
+            <i class="fa-solid fa-arrow-right text-gray-300 text-sm"></i>
+          </div>
+        </div>
+      </div>
+      <!-- Promo 2 -->
+      <div class="card-hover bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="h-32 md:h-36 relative overflow-hidden bg-gray-200">
+          <img src="https://loremflickr.com/600/300/dog,golden?lock=5" alt="" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <span class="absolute top-3 left-3 px-2.5 py-1 bg-teal-500 text-white text-xs font-bold rounded-lg">怪獸部落</span>
+          <span class="absolute bottom-3 right-3 px-2 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs rounded-md border border-white/20">剩 15 天</span>
+        </div>
+        <div class="p-3 md:p-4">
+          <h3 class="font-bold text-gray-900 text-sm mb-1">Monster 新品早鳥優惠</h3>
+          <p class="text-xs text-gray-500 mb-3 leading-relaxed">首批訂購 Monster 能量系列享 9 折，加碼贈品牌提袋一個</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-teal-600 font-semibold bg-teal-50 px-2 py-1 rounded-lg">早鳥 9 折</span>
+            <i class="fa-solid fa-arrow-right text-gray-300 text-sm"></i>
+          </div>
+        </div>
+      </div>
+      <!-- Promo 3 -->
+      <div class="card-hover bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer sm:col-span-2 lg:col-span-1">
+        <div class="h-32 md:h-36 relative overflow-hidden bg-gray-200">
+          <img src="https://loremflickr.com/600/300/cat,kitten?lock=6" alt="" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <span class="absolute top-3 left-3 px-2.5 py-1 bg-violet-500 text-white text-xs font-bold rounded-lg">超凝小姐</span>
+          <span class="absolute bottom-3 right-3 px-2 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs rounded-md border border-white/20">長期活動</span>
+        </div>
+        <div class="p-3 md:p-4">
+          <h3 class="font-bold text-gray-900 text-sm mb-1">貓砂聯名款買五送一</h3>
+          <p class="text-xs text-gray-500 mb-3 leading-relaxed">購買聯名限定款貓砂任一規格，每 5 包即贈 1 包同品項</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-violet-600 font-semibold bg-violet-50 px-2 py-1 rounded-lg">買 5 送 1</span>
+            <i class="fa-solid fa-arrow-right text-gray-300 text-sm"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEW ARRIVAL ===== -->
+<section class="py-8 md:py-12 bg-white">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-6">
+    <div class="flex items-center justify-between mb-4 md:mb-6">
+      <div class="flex items-center gap-2 md:gap-3">
+        <div class="w-1 h-5 md:h-6 bg-brand-500 rounded-full"></div>
+        <div>
+          <h2 class="text-lg md:text-xl font-bold text-gray-900">最新商品</h2>
+          <p class="text-xs md:text-sm text-gray-400 mt-0.5 hidden sm:block">New Arrivals — 率先掌握新品情報</p>
+        </div>
+      </div>
+      <a href="#" class="px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-brand-600 border border-brand-200 bg-white rounded-xl hover:bg-brand-50 transition-colors font-medium">
+        查看全部 <i class="fa-solid fa-arrow-right ml-1 hidden md:inline"></i>
+      </a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <!-- Product 1 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/cat,food?lock=7" alt="汪喵星球商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white bg-orange-500 rounded-lg">新品</span>
+          <button class="absolute top-2 right-2 md:top-3 md:right-3 w-7 h-7 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-400 text-gray-400">
+            <i class="fa-regular fa-heart text-xs md:text-sm"></i>
+          </button>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-orange-500 font-semibold">汪喵星球</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">春日鮮食罐 — 鮭魚南瓜配方 85g</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <div>
+              <span class="text-sm md:text-base font-bold text-gray-900">NT$ 65</span>
+              <span class="text-xs text-gray-400 line-through ml-1 hidden sm:inline">NT$ 75</span>
+            </div>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Product 2 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/dog,treat?lock=8" alt="怪獸部落商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white bg-teal-500 rounded-lg">新品</span>
+          <button class="absolute top-2 right-2 md:top-3 md:right-3 w-7 h-7 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-400 text-gray-400">
+            <i class="fa-regular fa-heart text-xs md:text-sm"></i>
+          </button>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-teal-500 font-semibold">怪獸部落</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">Monster 能量訓練零食 — 雞肉乾 150g</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <span class="text-sm md:text-base font-bold text-gray-900">NT$ 280</span>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Product 3 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/dog,bath?lock=9" alt="Hero Mama商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white bg-rose-500 rounded-lg">新品</span>
+          <button class="absolute top-2 right-2 md:top-3 md:right-3 w-7 h-7 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-400 text-gray-400">
+            <i class="fa-regular fa-heart text-xs md:text-sm"></i>
+          </button>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-rose-500 font-semibold">Hero Mama</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">寵物天然草本沐浴乳 — 薰衣草香 300ml</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <div>
+              <span class="text-sm md:text-base font-bold text-gray-900">NT$ 420</span>
+              <span class="text-xs text-gray-400 line-through ml-1 hidden sm:inline">NT$ 480</span>
+            </div>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Product 4 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/cat,litter?lock=10" alt="超凝小姐商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white bg-violet-500 rounded-lg">新品</span>
+          <button class="absolute top-2 right-2 md:top-3 md:right-3 w-7 h-7 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-400 text-gray-400">
+            <i class="fa-regular fa-heart text-xs md:text-sm"></i>
+          </button>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-violet-500 font-semibold">超凝小姐</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">聯名限定款礦砂 — 玫瑰香薰 6L</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <span class="text-sm md:text-base font-bold text-gray-900">NT$ 599</span>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TOP SELLERS ===== -->
+<section class="py-8 md:py-12 bg-gray-50">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-6">
+    <div class="flex items-center justify-between mb-4 md:mb-6">
+      <div class="flex items-center gap-2 md:gap-3">
+        <div class="w-1 h-5 md:h-6 bg-red-500 rounded-full"></div>
+        <div>
+          <h2 class="text-lg md:text-xl font-bold text-gray-900">熱銷商品</h2>
+          <p class="text-xs md:text-sm text-gray-400 mt-0.5 hidden sm:block">Top Sellers — 熱門商品快速補貨</p>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <!-- Hot 1 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/dog,golden?lock=11" alt="熱銷商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="badge-hot absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white rounded-lg">🔥 熱銷 #1</span>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-orange-500 font-semibold">汪喵星球</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">無穀主食罐 — 雞肉藍莓 400g</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <span class="text-sm md:text-base font-bold text-gray-900">NT$ 145</span>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Hot 2 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/dog,cute?lock=12" alt="熱銷商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="badge-sale absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white rounded-lg">特價</span>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-teal-500 font-semibold">怪獸部落</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">鹿肉軟零食 30 片裝</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <div>
+              <span class="text-sm md:text-base font-bold text-red-500">NT$ 199</span>
+              <span class="text-xs text-gray-400 line-through ml-1 hidden sm:inline">NT$ 260</span>
+            </div>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Hot 3 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/cat,pet?lock=13" alt="熱銷商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="badge-hot absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white rounded-lg">🔥 熱銷</span>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-rose-500 font-semibold">Hero Mama</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">寵物益生菌咀嚼錠 60 錠</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <span class="text-sm md:text-base font-bold text-gray-900">NT$ 680</span>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Hot 4 -->
+      <div class="card-hover group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer">
+        <div class="relative aspect-square overflow-hidden bg-gray-100">
+          <img src="https://loremflickr.com/400/400/cat,cute?lock=14" alt="熱銷商品" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <span class="badge-sale absolute top-2 left-2 md:top-3 md:left-3 px-1.5 md:px-2 py-0.5 text-xs font-bold text-white rounded-lg">特價</span>
+        </div>
+        <div class="p-3 md:p-4">
+          <span class="text-xs text-violet-500 font-semibold">超凝小姐</span>
+          <h3 class="font-semibold text-gray-900 text-xs md:text-sm mt-1 leading-snug line-clamp-2">強效凝結礦砂 — 無味款 10L × 3 包</h3>
+          <div class="flex items-center justify-between mt-2 md:mt-3">
+            <div>
+              <span class="text-sm md:text-base font-bold text-red-500">NT$ 890</span>
+              <span class="text-xs text-gray-400 line-through ml-1 hidden sm:inline">NT$ 1,080</span>
+            </div>
+            <button class="w-7 h-7 md:w-8 md:h-8 bg-brand-500 hover:bg-brand-600 rounded-full flex items-center justify-center shadow-md shadow-brand-200 transition-colors">
+              <i class="fa-solid fa-plus text-white text-xs md:text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PLATFORM SERVICES ===== -->
+<section class="py-8 md:py-12 bg-white border-t border-gray-100">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-6">
+    <div class="text-center mb-6 md:mb-8">
+      <h2 class="text-lg md:text-xl font-bold text-gray-900">平台服務與合作權益</h2>
+      <p class="text-xs md:text-sm text-gray-400 mt-1">為您的業務提供完整支援</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-5">
+      <div class="flex gap-3 md:gap-4 p-4 md:p-5 rounded-2xl bg-gradient-to-br from-brand-50 to-orange-50 border border-brand-100">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-brand-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-brand-200">
+          <i class="fa-solid fa-truck-fast text-white text-sm md:text-lg"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-900 text-sm">快速出貨保障</h3>
+          <p class="text-xs text-gray-500 mt-1 leading-relaxed">下單後 24 小時內出貨，全台 2-3 日到達</p>
+        </div>
+      </div>
+      <div class="flex gap-3 md:gap-4 p-4 md:p-5 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-100">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-teal-200">
+          <i class="fa-solid fa-headset text-white text-sm md:text-lg"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-900 text-sm">專屬業務顧問</h3>
+          <p class="text-xs text-gray-500 mt-1 leading-relaxed">白金以上配置專屬業務，一對一銷售諮詢</p>
+        </div>
+      </div>
+      <div class="flex gap-3 md:gap-4 p-4 md:p-5 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-violet-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-violet-200">
+          <i class="fa-solid fa-chart-line text-white text-sm md:text-lg"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-900 text-sm">銷售數據分析</h3>
+          <p class="text-xs text-gray-500 mt-1 leading-relaxed">即時查看各品牌銷售報表，掌握趨勢提前備貨</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-gray-900 text-gray-400 pt-8 md:pt-12 pb-6">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-6 md:mb-8">
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2 mb-3 md:mb-4">
+          <div class="w-6 h-6 md:w-7 md:h-7 bg-brand-500 rounded-lg flex items-center justify-center">
+            <i class="fa-solid fa-bolt text-white text-xs"></i>
+          </div>
+          <span class="font-bold text-white text-base md:text-lg">FastPass</span>
+        </div>
+        <p class="text-xs leading-relaxed">跨品牌 B2B 經銷商採購平台，整合四大寵物品牌。</p>
+      </div>
+      <div>
+        <h4 class="text-white text-xs md:text-sm font-semibold mb-2 md:mb-3">品牌館</h4>
+        <ul class="space-y-1.5 md:space-y-2 text-xs">
+          <li><a href="#" class="hover:text-white transition-colors">汪喵星球</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">怪獸部落</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Hero Mama</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">超凝小姐</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white text-xs md:text-sm font-semibold mb-2 md:mb-3">服務支援</h4>
+        <ul class="space-y-1.5 md:space-y-2 text-xs">
+          <li><a href="#" class="hover:text-white transition-colors">訂單查詢</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">退換貨申請</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">常見問題</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">聯絡業務</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white text-xs md:text-sm font-semibold mb-2 md:mb-3">合作資源</h4>
+        <ul class="space-y-1.5 md:space-y-2 text-xs">
+          <li><a href="#" class="hover:text-white transition-colors">素材下載</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">銷售報表</a></li>
+          <li><a href="pages/store-list.html" class="hover:text-white transition-colors">後台管理</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 pt-4 flex flex-col sm:flex-row items-center justify-between text-xs gap-2">
+      <p>© 2026 FastPass. All rights reserved.</p>
+      <p>隱私政策 · 服務條款</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let currentSlide = 0;
+  const totalSlides = 3;
+  let autoPlayTimer;
+
+  function goToSlide(n) {
+    document.getElementById('slide-' + currentSlide).style.opacity = '0';
+    document.getElementById('dot-' + currentSlide).className = document.getElementById('dot-' + currentSlide).className.replace('bg-white ', 'bg-white/40 ');
+    currentSlide = n;
+    document.getElementById('slide-' + currentSlide).style.opacity = '1';
+    document.getElementById('dot-' + currentSlide).className = document.getElementById('dot-' + currentSlide).className.replace('bg-white/40', 'bg-white');
+    resetAutoPlay();
+  }
+  function nextSlide() { goToSlide((currentSlide + 1) % totalSlides); }
+  function prevSlide() { goToSlide((currentSlide - 1 + totalSlides) % totalSlides); }
+  function resetAutoPlay() {
+    clearInterval(autoPlayTimer);
+    autoPlayTimer = setInterval(nextSlide, 5000);
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const icon = document.getElementById('menuIcon');
+    if (menu.classList.contains('hidden')) {
+      menu.classList.remove('hidden');
+      icon.className = 'fa-solid fa-xmark text-base';
+    } else {
+      menu.classList.add('hidden');
+      icon.className = 'fa-solid fa-bars text-base';
+    }
+  }
+
+  // Touch swipe for hero
+  let touchStartX = 0;
+  const slider = document.getElementById('heroSlider');
+  slider.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  slider.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+  });
+
+  resetAutoPlay();
+</script>
+</body>
+</html>
